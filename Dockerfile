@@ -10,14 +10,14 @@ WORKDIR /usr/src/app
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-COPY package.json pnpm-lock.yaml* ./
-RUN if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; else npm install; fi
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
+RUN pnpm install --frozen-lockfile
 
 COPY tsconfig*.json nest-cli.json ./
 COPY src/ ./src/
 
-RUN npm run build
-RUN npm prune --production
+RUN pnpm run build
+RUN pnpm prune --prod --no-optional
 
 # 2. Production Runtime Stage
 FROM node:26-alpine AS runner
