@@ -22,8 +22,8 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "types": ["node", "vitest/globals"]
+    "types": ["node"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "integrations", "vitest.config.ts"]
+  "exclude": ["node_modules", "dist", "vitest.config.ts"]
 }

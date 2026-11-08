@@ -1,24 +1,24 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { IExpensesService } from './i-expenses.service';
-import { IExpensesRepository } from '../data/repositories/i-expenses.repository';
-import { Result } from '../../../common/errors/result.mapper';
+import { IExpensesRepository } from '../../data/repositories/i-expenses.repository';
+import { Result } from '../../../../common/errors/result.mapper';
 import {
   BaseError,
   CouldNotSave,
   InvalidOperation,
   NotFound,
-} from '../../../common/errors/errors';
-import { CreateExpenseDto } from '../presentation/dtos/create-expense.dto';
-import { CreateCreditCardDto } from '../presentation/dtos/create-credit-card.dto';
-import { ExpenseEntity } from '../data/entities/expense.entity';
-import { CreditCardEntity } from '../data/entities/credit-card.entity';
-import { ExpenseInstallmentEntity } from '../data/entities/expense-installment.entity';
+} from '../../../../common/errors/errors';
+import { CreateExpenseDto } from '../../presentation/dtos/create-expense.dto';
+import { CreateCreditCardDto } from '../../presentation/dtos/create-credit-card.dto';
+import { ExpenseEntity } from '../../data/entities/expense.entity';
+import { CreditCardEntity } from '../../data/entities/credit-card.entity';
+import { ExpenseInstallmentEntity } from '../../data/entities/expense-installment.entity';
 import { InstallmentPlanGenerator } from './installment-plan-generator';
 import {
   InstallmentItemDto,
   MonthlyInstallmentsSummaryDto,
-} from '../presentation/dtos/installment-summary.dto';
-import { ExpenseMapper } from '../presentation/mappers/expense.mapper';
+} from '../../presentation/dtos/installment-summary.dto';
+import { ExpenseMapper } from '../../presentation/mappers/expense.mapper';
 
 @Injectable()
 export class ExpensesService implements IExpensesService {
@@ -195,7 +195,6 @@ export class ExpensesService implements IExpensesService {
 
     const targetDueDay = dueDay && dueDay >= 1 && dueDay <= 31 ? dueDay : day;
 
-    // Next month due date
     const nextMonthIndex = month + 1;
     const nextYear = year + Math.floor(nextMonthIndex / 12);
     const nextMonth = nextMonthIndex % 12;

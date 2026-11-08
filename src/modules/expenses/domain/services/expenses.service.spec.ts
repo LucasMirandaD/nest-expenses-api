@@ -1,11 +1,11 @@
-import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExpensesService } from './expenses.service';
-import { IExpensesRepository } from '../data/repositories/i-expenses.repository';
-import { CreateExpenseDto } from '../presentation/dtos/create-expense.dto';
-import { ExpenseEntity } from '../data/entities/expense.entity';
-import { CreditCardEntity } from '../data/entities/credit-card.entity';
-import { NotFound } from '../../../common/errors/errors';
+import { IExpensesRepository } from '../../data/repositories/i-expenses.repository';
+import { CreateExpenseDto } from '../../presentation/dtos/create-expense.dto';
+import { ExpenseEntity } from '../../data/entities/expense.entity';
+import { CreditCardEntity } from '../../data/entities/credit-card.entity';
+import { NotFound } from '../../../../common/errors/errors';
 
 describe('ExpensesService', () => {
   let service: ExpensesService;

@@ -24,7 +24,7 @@ export class ExpensesRepository implements IExpensesRepository {
   async findExpenseById(id: string): Promise<ExpenseEntity | null> {
     return this.expenseRepo.findOne({
       where: { id },
-      relations: ['creditCard', 'installmentsPlan'],
+      relations: { creditCard: true, installmentsPlan: true },
     });
   }
 
@@ -33,7 +33,7 @@ export class ExpensesRepository implements IExpensesRepository {
       order: { expenseDate: 'DESC', createdAt: 'DESC' },
       take: limit,
       skip: offset,
-      relations: ['creditCard', 'installmentsPlan'],
+      relations: { creditCard: true, installmentsPlan: true },
     });
   }
 
@@ -46,7 +46,7 @@ export class ExpensesRepository implements IExpensesRepository {
         dueDate: Between(startDate, endDate),
       },
       order: { dueDate: 'ASC' },
-      relations: ['expense', 'expense.creditCard'],
+      relations: { expense: { creditCard: true } },
     });
   }
 

@@ -1,12 +1,12 @@
-import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExpensesController } from './expenses.controller';
-import { IExpensesService } from '../domain/services/i-expenses.service';
-import { Result } from '../../../common/errors/result.mapper';
-import { NotFound } from '../../../common/errors/errors';
+import { IExpensesService } from '../../domain/services/i-expenses.service';
+import { Result } from '../../../../common/errors/result.mapper';
+import { NotFound } from '../../../../common/errors/errors';
 import { NotFoundException } from '@nestjs/common';
-import { ExpenseEntity } from '../data/entities/expense.entity';
-import { CreateExpenseDto } from './dtos/create-expense.dto';
+import { ExpenseEntity } from '../../data/entities/expense.entity';
+import { CreateExpenseDto } from '../dtos/create-expense.dto';
 
 describe('ExpensesController', () => {
   let controller: ExpensesController;
