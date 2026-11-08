@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExpensesController } from './expenses.controller';
 import { IExpensesService } from '../domain/services/i-expenses.service';
@@ -9,16 +10,16 @@ import { CreateExpenseDto } from './dtos/create-expense.dto';
 
 describe('ExpensesController', () => {
   let controller: ExpensesController;
-  let mockService: Partial<Record<keyof IExpensesService, jest.Mock>>;
+  let mockService: Partial<Record<keyof IExpensesService, Mock>>;
 
   beforeEach(async () => {
     mockService = {
-      registerExpense: jest.fn(),
-      getExpenseById: jest.fn(),
-      listExpenses: jest.fn(),
-      registerCreditCard: jest.fn(),
-      listCreditCards: jest.fn(),
-      getMonthlyInstallmentsSummary: jest.fn(),
+      registerExpense: vi.fn(),
+      getExpenseById: vi.fn(),
+      listExpenses: vi.fn(),
+      registerCreditCard: vi.fn(),
+      listCreditCards: vi.fn(),
+      getMonthlyInstallmentsSummary: vi.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -32,7 +33,7 @@ describe('ExpensesController', () => {
     }).compile();
 
     controller = module.get<ExpensesController>(ExpensesController);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should return presentation dto when expense registration succeeds', async () => {

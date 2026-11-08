@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExpensesService } from './expenses.service';
 import { IExpensesRepository } from '../data/repositories/i-expenses.repository';
@@ -8,19 +9,19 @@ import { NotFound } from '../../../common/errors/errors';
 
 describe('ExpensesService', () => {
   let service: ExpensesService;
-  let mockRepository: Partial<Record<keyof IExpensesRepository, jest.Mock>>;
+  let mockRepository: Partial<Record<keyof IExpensesRepository, Mock>>;
 
   beforeEach(async () => {
     mockRepository = {
-      saveExpense: jest.fn(),
-      findExpenseById: jest.fn(),
-      findExpenses: jest.fn(),
-      findInstallmentsByDueDateRange: jest.fn(),
-      findPendingInstallments: jest.fn(),
-      saveCreditCard: jest.fn(),
-      findCreditCards: jest.fn(),
-      findCreditCardById: jest.fn(),
-      findCreditCardByDetails: jest.fn(),
+      saveExpense: vi.fn(),
+      findExpenseById: vi.fn(),
+      findExpenses: vi.fn(),
+      findInstallmentsByDueDateRange: vi.fn(),
+      findPendingInstallments: vi.fn(),
+      saveCreditCard: vi.fn(),
+      findCreditCards: vi.fn(),
+      findCreditCardById: vi.fn(),
+      findCreditCardByDetails: vi.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -34,7 +35,7 @@ describe('ExpensesService', () => {
     }).compile();
 
     service = module.get<ExpensesService>(ExpensesService);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('registerExpense', () => {
@@ -88,7 +89,7 @@ describe('ExpensesService', () => {
         intervalMonths: 2, // Cuotas cada 2 meses
       };
 
-      mockRepository.saveExpense!.mockImplementation(async (entity) => {
+      mockRepository.saveExpense!.mockImplementation(async (entity: any) => {
         return { ...entity, id: 'expense-uuid-99' };
       });
 

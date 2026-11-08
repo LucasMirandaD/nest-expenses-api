@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { InstallmentPlanGenerator } from './installment-plan-generator';
 
 describe('InstallmentPlanGenerator', () => {
