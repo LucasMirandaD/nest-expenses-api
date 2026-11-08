@@ -1,0 +1,28 @@
+# Hermes Agent Configuration Example for Expenses Integration
+# Target LLM Gateway: LiteLLM running on Proxmox VM
+
+model:
+  provider: openai-compatible
+  base_url: "http://192.168.68.57:4000/v1"
+  api_key: "sk-litellm-proxy-local"
+  model_name: "gemini/gemini-3.8-flash"
+  temperature: 0.2
+
+fallback_models:
+  - model_name: "openrouter/free"
+    provider: openrouter
+    api_key: "${OPENROUTER_API_KEY}"
+
+tools:
+  - name: expenses_tool
+    path: "./tools/expenses_tool.py"
+    functions:
+      - register_expense
+      - get_installments_summary
+      - list_credit_cards
+
+skills:
+  - path: "./skills/finanzas/facturas-ocr"
+
+environment:
+  EXPENSES_API_URL: "http://192.168.68.57:3000/api"
