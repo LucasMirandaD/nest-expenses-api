@@ -13,6 +13,7 @@ export class ExpenseMapper {
       currency: entity.currency,
       expenseDate: entity.expenseDate,
       paymentMethod: entity.paymentMethod,
+      bankName: entity.bankName,
       isInstallment: entity.isInstallment,
       totalInstallments: entity.totalInstallments,
       intervalMonths: entity.intervalMonths,

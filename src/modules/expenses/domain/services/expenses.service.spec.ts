@@ -63,6 +63,35 @@ describe('ExpensesService', () => {
       expect(mockRepository.saveExpense).toHaveBeenCalledTimes(1);
     });
 
+    it('should register bank transfer expense with bank name', async () => {
+      // Arrange
+      const dto: CreateExpenseDto = {
+        description: 'Pago alquiler cochera',
+        merchantName: 'Garaje Central',
+        totalAmount: 35000,
+        currency: 'ARS',
+        expenseDate: '2026-11-08',
+        paymentMethod: 'BANK_TRANSFER',
+        bankName: 'Galicia',
+      };
+
+      mockRepository.saveExpense!.mockImplementation(async (entity: any) => {
+        return { ...entity, id: 'expense-transfer-1' };
+      });
+
+      // Act
+      const result = await service.registerExpense(dto);
+
+      // Assert
+      expect(result.isSuccess).toBe(true);
+      const saved = result.getValue();
+      expect(saved.id).toBe('expense-transfer-1');
+      expect(saved.paymentMethod).toBe('BANK_TRANSFER');
+      expect(saved.bankName).toBe('Galicia');
+      expect(mockRepository.findCreditCardByDetails).not.toHaveBeenCalled();
+      expect(mockRepository.findCreditCardById).not.toHaveBeenCalled();
+    });
+
     it('should generate installments plan and match credit card when card details are provided', async () => {
       // Arrange
       const card = new CreditCardEntity();

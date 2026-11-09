@@ -48,6 +48,10 @@ export class CreateExpenseDto {
 
   @IsOptional()
   @IsString()
+  bankName?: string;
+
+  @IsOptional()
+  @IsString()
   creditCardId?: string;
 
   @IsOptional()

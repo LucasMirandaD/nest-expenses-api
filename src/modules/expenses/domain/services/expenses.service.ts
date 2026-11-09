@@ -31,17 +31,19 @@ export class ExpensesService implements IExpensesService {
       let matchedCard: CreditCardEntity | null = null;
 
       // 1. Resolve Credit Card if provided
-      if (dto.creditCardId) {
-        matchedCard = await this.expensesRepo.findCreditCardById(dto.creditCardId);
-        if (!matchedCard) {
-          return Result.fail(new NotFound(`CreditCard with id ${dto.creditCardId}`));
+      if (dto.paymentMethod !== 'BANK_TRANSFER') {
+        if (dto.creditCardId) {
+          matchedCard = await this.expensesRepo.findCreditCardById(dto.creditCardId);
+          if (!matchedCard) {
+            return Result.fail(new NotFound(`CreditCard with id ${dto.creditCardId}`));
+          }
+        } else if (dto.cardBank && dto.cardName) {
+          matchedCard = await this.expensesRepo.findCreditCardByDetails(
+            dto.cardBank,
+            dto.cardName,
+            dto.cardHolder,
+          );
         }
-      } else if (dto.cardBank && dto.cardName) {
-        matchedCard = await this.expensesRepo.findCreditCardByDetails(
-          dto.cardBank,
-          dto.cardName,
-          dto.cardHolder,
-        );
       }
 
       const totalInstallments = dto.totalInstallments && dto.totalInstallments > 1 ? dto.totalInstallments : 1;
@@ -79,6 +81,7 @@ export class ExpensesService implements IExpensesService {
       expense.currency = dto.currency || 'ARS';
       expense.expenseDate = dto.expenseDate;
       expense.paymentMethod = dto.paymentMethod || (matchedCard ? 'CREDIT_CARD' : 'CASH');
+      expense.bankName = dto.bankName || (dto.paymentMethod === 'BANK_TRANSFER' ? dto.cardBank : undefined);
       expense.creditCardId = matchedCard?.id;
       expense.creditCard = matchedCard || undefined;
       expense.isInstallment = isInstallment;

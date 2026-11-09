@@ -12,6 +12,7 @@ export interface IExpense {
   currency: string;
   expenseDate: string; // YYYY-MM-DD
   paymentMethod: PaymentMethod;
+  bankName?: string;
   creditCardId?: string;
   creditCard?: ICreditCard;
   isInstallment: boolean;

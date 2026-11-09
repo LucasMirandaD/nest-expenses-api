@@ -48,6 +48,9 @@ export class ExpenseEntity implements IExpense {
   })
   paymentMethod: PaymentMethod;
 
+  @Column({ name: 'bank_name', type: 'varchar', length: 100, nullable: true })
+  bankName?: string;
+
   @Column({ name: 'credit_card_id', type: 'uuid', nullable: true })
   creditCardId?: string;
 

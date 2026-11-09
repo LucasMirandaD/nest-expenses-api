@@ -6,6 +6,7 @@ export class ExpenseResponseDto {
   currency: string;
   expenseDate: string;
   paymentMethod: string;
+  bankName?: string;
   isInstallment: boolean;
   totalInstallments: number;
   intervalMonths: number;
