@@ -64,6 +64,38 @@ export class ExpensesRepository implements IExpensesRepository {
     return query.orderBy('inst.dueDate', 'ASC').getMany();
   }
 
+  async findInstallmentById(id: string): Promise<ExpenseInstallmentEntity | null> {
+    return this.installmentRepo.findOne({
+      where: { id },
+      relations: { expense: { creditCard: true } },
+    });
+  }
+
+  async saveInstallment(installment: ExpenseInstallmentEntity): Promise<ExpenseInstallmentEntity> {
+    return this.installmentRepo.save(installment);
+  }
+
+  async searchPendingInstallments(searchTerm?: string, dueDate?: string): Promise<ExpenseInstallmentEntity[]> {
+    const query = this.installmentRepo
+      .createQueryBuilder('inst')
+      .innerJoinAndSelect('inst.expense', 'exp')
+      .leftJoinAndSelect('exp.creditCard', 'card')
+      .where('inst.status = :status', { status: 'PENDING' });
+
+    if (searchTerm) {
+      query.andWhere(
+        '(LOWER(exp.merchant_name) LIKE :term OR LOWER(exp.description) LIKE :term)',
+        { term: `%${searchTerm.toLowerCase()}%` },
+      );
+    }
+
+    if (dueDate) {
+      query.andWhere('inst.dueDate = :dueDate', { dueDate });
+    }
+
+    return query.orderBy('inst.dueDate', 'ASC').getMany();
+  }
+
   async saveCreditCard(card: Partial<CreditCardEntity>): Promise<CreditCardEntity> {
     return this.cardRepo.save(card);
   }

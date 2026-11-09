@@ -13,6 +13,7 @@ import {
 import { IExpensesService } from '../../domain/services/i-expenses.service';
 import { CreateExpenseDto } from '../dtos/create-expense.dto';
 import { CreateCreditCardDto } from '../dtos/create-credit-card.dto';
+import { PayInstallmentDto } from '../dtos/pay-installment.dto';
 import { ExpenseMapper } from '../mappers/expense.mapper';
 import { ErrorMapperToHttp } from '../../../../common/errors/error.mapper';
 import { ExpenseResponseDto } from '../dtos/expense-response.dto';
@@ -55,6 +56,60 @@ export class ExpensesController {
       throw ErrorMapperToHttp(result.getError());
     }
     return result.getValue();
+  }
+
+  @Get('installments/pending')
+  async searchPendingInstallments(
+    @Query('search') search?: string,
+    @Query('dueDate') dueDate?: string,
+  ) {
+    const result = await this.expensesService.searchPendingInstallments(search, dueDate);
+    if (result.isFailure) {
+      throw ErrorMapperToHttp(result.getError());
+    }
+    return result.getValue().map((inst) => ({
+      id: inst.id,
+      expenseId: inst.expenseId,
+      merchantName: inst.expense?.merchantName,
+      description: inst.expense?.description,
+      installmentNumber: inst.installmentNumber,
+      totalInstallments: inst.totalInstallments,
+      amount: Number(inst.amount),
+      dueDate: inst.dueDate,
+      status: inst.status,
+      notes: inst.notes,
+    }));
+  }
+
+  @Post('installments/:id/pay')
+  @HttpCode(HttpStatus.OK)
+  async payInstallment(
+    @Param('id') id: string,
+    @Body() dto: PayInstallmentDto,
+  ) {
+    const result = await this.expensesService.payInstallment(
+      id,
+      dto.paymentMethod,
+      dto.bankName,
+      dto.notes,
+    );
+    if (result.isFailure) {
+      throw ErrorMapperToHttp(result.getError());
+    }
+    const inst = result.getValue();
+    return {
+      id: inst.id,
+      expenseId: inst.expenseId,
+      merchantName: inst.expense?.merchantName,
+      description: inst.expense?.description,
+      installmentNumber: inst.installmentNumber,
+      totalInstallments: inst.totalInstallments,
+      amount: Number(inst.amount),
+      dueDate: inst.dueDate,
+      status: inst.status,
+      notes: inst.notes,
+      paidAt: inst.paidAt,
+    };
   }
 
   @Get('cards')

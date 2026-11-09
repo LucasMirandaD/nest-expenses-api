@@ -190,6 +190,45 @@ export class ExpensesService implements IExpensesService {
     }
   }
 
+  async searchPendingInstallments(
+    query?: string,
+    dueDate?: string,
+  ): Promise<Result<ExpenseInstallmentEntity[]>> {
+    try {
+      const items = await this.expensesRepo.searchPendingInstallments(query, dueDate);
+      return Result.ok(items);
+    } catch (error: any) {
+      this.logger.error(`Error searching pending installments: ${error.message}`);
+      return Result.fail(new InvalidOperation(error.message));
+    }
+  }
+
+  async payInstallment(
+    id: string,
+    paymentMethod: string = 'BANK_TRANSFER',
+    bankName?: string,
+    notes?: string,
+  ): Promise<Result<ExpenseInstallmentEntity>> {
+    try {
+      const installment = await this.expensesRepo.findInstallmentById(id);
+      if (!installment) {
+        return Result.fail(new NotFound(`Installment with id ${id}`));
+      }
+
+      installment.status = 'PAID';
+      installment.paidAt = new Date();
+      const paymentInfo = [paymentMethod, bankName].filter(Boolean).join(' - ');
+      installment.notes = notes || (paymentInfo ? `Pagado vía ${paymentInfo}` : 'Pagado');
+
+      const saved = await this.expensesRepo.saveInstallment(installment);
+      this.logger.log(`Installment ${id} marked as PAID via ${paymentInfo}`);
+      return Result.ok(saved);
+    } catch (error: any) {
+      this.logger.error(`Error paying installment: ${error.message}`);
+      return Result.fail(new InvalidOperation(error.message));
+    }
+  }
+
   private calculateFirstDueDate(expenseDate: string, dueDay?: number): string {
     const [yearStr, monthStr, dayStr] = expenseDate.split('-');
     const year = parseInt(yearStr, 10);
